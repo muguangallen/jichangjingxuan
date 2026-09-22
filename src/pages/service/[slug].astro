@@ -1,0 +1,28 @@
+---
+import ServiceLayout from '../../layouts/ServiceLayout.astro';
+import { servicesData } from '../../data/services';
+import { getRelatedArticles, getRelatedServices } from '../../lib/links';
+
+export async function getStaticPaths() {
+  // Only generate pages for services with real details
+  const activeServices = servicesData.filter(srv => srv.hasDetails === true);
+  return activeServices.map(srv => ({
+    params: { slug: srv.slug },
+    props: { service: srv }
+  }));
+}
+
+export interface Props {
+  service: typeof servicesData[0];
+}
+
+const { service } = Astro.props;
+
+const relatedArticles = await getRelatedArticles(service.slug, 'airport', service.routes, 4);
+const relatedServices = getRelatedServices(service.routes, 3).filter(s => s.slug !== service.slug && s.hasDetails);
+---
+<ServiceLayout 
+  service={service} 
+  relatedArticles={relatedArticles}
+  relatedServices={relatedServices}
+/>

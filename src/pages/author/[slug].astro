@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { getSortedArticles } from '../../lib/content';
+import { generateBreadcrumbSchema } from '../../lib/schema';
+import { siteConfig } from '../../data/site';
+
+export async function getStaticPaths() {
+  const authors = await getCollection('authors');
+  return authors.map(author => ({
+    params: { slug: author.slug },
+    props: { author }
+  }));
+}
+
+export interface Props {
+  author: CollectionEntry<'authors'>;
+}
+
+const { author } = Astro.props;
+const { Content } = await author.render();
+const articles = await getSortedArticles();
+const authorArticles = articles.filter(a => a.data.author === author.slug || author.slug === 'tech-editor');
+
+const breadcrumbs = [
+  { name: '官方团队', item: `/author/${author.slug}/` }
+];
+
+const authorProfileSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  'mainEntity': {
+    '@type': 'Organization',
+    'name': author.data.name,
+    'description': author.data.bio,
+    'image': `${siteConfig.url}${author.data.avatar}`
+  }
+};
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: '首页', item: '/' },
+  ...breadcrumbs
+]);
+
+const seoProps = {
+  title: `${author.data.name} - 团队介绍`,
+  description: author.data.bio,
+  canonical: `${siteConfig.url}/author/${author.slug}/`
+};
+---
+<BaseLayout seo={seoProps} schema={[authorProfileSchema, breadcrumbSchema]}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="author-profile-card card">
+      <div class="author-profile-header">
+        <img src={author.data.avatar} alt={author.data.name} class="author-avatar-img" />
+        <div>
+          <h1 class="author-name-title">{author.data.name}</h1>
+          <span class="author-role-badge">{author.data.role}</span>
+          <p class="author-bio">{author.data.bio}</p>
+          <div class="author-meta">
+            <span>负责内容: 网络服务公开资料整理与选型指南</span> | 
+            <span>更新时间: {author.data.updatedAt}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="author-body-content">
+        <Content />
+      </div>
+    </header>
+
+    <section class="section-block">
+      <h2>📰 团队撰写与整理的资讯文章 ({authorArticles.length})</h2>
+      <div class="grid-2">
+        {authorArticles.map(art => (
+          <ArticleCard article={art} />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.author-profile-card {
+  margin-bottom: 2.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.author-profile-header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.author-avatar-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
+
+.author-name-title {
+  margin: 0 0 0.4rem 0;
+  font-size: 1.6rem;
+  color: #0f172a;
+}
+
+.author-role-badge {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 0.6rem;
+  border: 1px solid #e2e8f0;
+}
+
+.author-bio {
+  color: #475569;
+  font-size: 0.95rem;
+  margin-bottom: 0.6rem;
+}
+
+.author-meta {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.author-body-content {
+  padding-top: 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.section-block h2 {
+  margin-bottom: 1.5rem;
+  color: #0f172a;
+}
+
+@media (max-width: 640px) {
+  .author-profile-header {
+    flex-direction: column;
+  }
+}
+</style>

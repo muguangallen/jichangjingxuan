@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { siteConfig } from '../data/site';
+
+const breadcrumbs = [
+  { name: '联系我们', item: '/contact/' }
+];
+
+const seoProps = {
+  title: '联系我们 - 反馈与评测合作',
+  description: '欢迎提交网络服务测试数据修正、线路反馈或技术交流意见。',
+  canonical: `${siteConfig.url}/contact/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <article class="content-container card">
+      <h1>联系我们</h1>
+      <p>如果您发现本站评测数据存在偏差、线路信息已变更，或者有关于网络性能测试的技术建议，欢迎通过以下渠道与我们取得联系：</p>
+      
+      <div class="contact-box">
+        <p><strong>📧 电子邮件：</strong> contact@network2026.example.com</p>
+        <p><strong>⏰ 工作时间：</strong> 周一至周五 09:00 - 18:00 (UTC+8)</p>
+      </div>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding { padding-top: 2rem; padding-bottom: 4rem; }
+.contact-box {
+  background: #1e293b;
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  margin-top: 1.5rem;
+}
+</style>

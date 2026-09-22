@@ -1,0 +1,26 @@
+---
+import CategoryLayout from '../../layouts/CategoryLayout.astro';
+import { categories } from '../../data/categories';
+import { getArticlesByCategory } from '../../lib/content';
+import { servicesData } from '../../data/services';
+
+export async function getStaticPaths() {
+  return categories.map(cat => ({
+    params: { slug: cat.slug },
+    props: { category: cat }
+  }));
+}
+
+export interface Props {
+  category: typeof categories[0];
+}
+
+const { category } = Astro.props;
+const articles = await getArticlesByCategory(category.slug);
+const featuredServices = servicesData.filter(s => s.status === 'active').slice(0, 3);
+---
+<CategoryLayout 
+  category={category} 
+  articles={articles} 
+  featuredServices={featuredServices} 
+/>

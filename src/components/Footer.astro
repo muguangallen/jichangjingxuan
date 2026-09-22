@@ -1,0 +1,110 @@
+---
+import { footerNav } from '../data/navigation';
+import { siteConfig } from '../data/site';
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">⚡ {siteConfig.shortName}</div>
+      <p class="footer-desc">{siteConfig.description}</p>
+      <div class="footer-copyright">
+        © 2026 {siteConfig.shortName}. 保留所有权利。
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">核心分类</h4>
+      <ul>
+        {footerNav.categories.map(item => (
+          <li><a href={item.path}>{item.title}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">热门专题</h4>
+      <ul>
+        {footerNav.guides.map(item => (
+          <li><a href={item.path}>{item.title}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">关于与声明</h4>
+      <ul>
+        {footerNav.about.map(item => (
+          <li><a href={item.path}>{item.title}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+.site-footer {
+  background-color: #090d16;
+  border-top: 1px solid var(--color-border);
+  padding: 3.5rem 0 2rem 0;
+  margin-top: 4rem;
+  color: var(--color-text-muted);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.footer-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 1rem;
+}
+
+.footer-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-text-dim);
+  margin-bottom: 1.5rem;
+}
+
+.footer-copyright {
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+}
+
+.footer-title {
+  color: var(--color-text-main);
+  font-size: 1rem;
+  margin-top: 0;
+  margin-bottom: 1.2rem;
+  border: none;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-col li {
+  margin-bottom: 0.6rem;
+}
+
+.footer-col a {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.footer-col a:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+</style>

@@ -1,0 +1,152 @@
+---
+export interface SpeedTestRecord {
+  region: string;
+  nodeName: string;
+  route?: string;
+  latency?: string;
+  download?: string;
+  upload?: string;
+  testedAt?: string;
+  environment?: string;
+  notes?: string;
+}
+
+export interface Props {
+  record: SpeedTestRecord;
+}
+
+const { record } = Astro.props;
+const hasMetrics = !!(record.latency || record.download || record.upload);
+---
+<div class="speed-test-card card">
+  <div class="speed-header">
+    <div class="node-info">
+      <span class="region-badge">{record.region}</span>
+      <span class="node-name">{record.nodeName}</span>
+    </div>
+    {record.route && <span class="route-type">{record.route}</span>}
+  </div>
+
+  {hasMetrics ? (
+    <div class="speed-metrics">
+      {record.latency && (
+        <div class="metric">
+          <span class="metric-val text-primary">{record.latency}</span>
+          <span class="metric-lbl">TCP延迟</span>
+        </div>
+      )}
+      {record.download && (
+        <div class="metric">
+          <span class="metric-val text-success">{record.download}</span>
+          <span class="metric-lbl">下载速度</span>
+        </div>
+      )}
+      {record.upload && (
+        <div class="metric">
+          <span class="metric-val">{record.upload}</span>
+          <span class="metric-lbl">上传速度</span>
+        </div>
+      )}
+    </div>
+  ) : (
+    <div class="no-data-notice card">
+      <span>暂无测试数据</span>
+    </div>
+  )}
+
+  <div class="speed-meta">
+    {record.environment && <span class="test-env">测试环境: {record.environment}</span>}
+    {record.testedAt && <span class="test-date">测速日期: {record.testedAt}</span>}
+  </div>
+
+  {record.notes && <p class="speed-notes">备注: {record.notes}</p>}
+</div>
+
+<style>
+.speed-test-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 1rem;
+}
+
+.speed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.region-badge {
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  margin-right: 0.5rem;
+}
+
+.node-name {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.route-type {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.speed-metrics {
+  display: flex;
+  gap: 1rem;
+  background: #f8fafc;
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  margin-bottom: 0.8rem;
+}
+
+.metric {
+  flex: 1;
+}
+
+.metric-val {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.metric-lbl {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.text-primary { color: #2563eb; }
+.text-success { color: #059669; }
+
+.no-data-notice {
+  background-color: #f8fafc;
+  color: #64748b;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+.speed-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.speed-notes {
+  font-size: 0.8rem;
+  color: #475569;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 0.5rem;
+}
+</style>

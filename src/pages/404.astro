@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SearchBox from '../components/SearchBox.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getFeaturedArticles } from '../lib/content';
+import { siteConfig } from '../data/site';
+
+const featuredArticles = await getFeaturedArticles();
+const topArticles = featuredArticles.slice(0, 4);
+
+const seoProps = {
+  title: '404 - 页面未找到',
+  description: '抱歉，您访问的页面不存在或已被移除。',
+  canonical: `${siteConfig.url}/404`,
+  noindex: true
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <div class="error-card card">
+      <span class="error-code">404</span>
+      <h1 class="error-title">抱歉，您访问的页面不存在</h1>
+      <p class="error-desc">该页面可能已经被转移、更名或删除。您可以使用下方搜索框检索内容，或者返回首页。</p>
+      
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">返回首页</a>
+        <a href="/guide/airport-recommendation/" class="btn btn-outline">查看2026机场推荐指南</a>
+      </div>
+
+      <div class="error-search">
+        <SearchBox placeholder="搜索你感兴趣的内容..." />
+      </div>
+    </div>
+
+    <section class="popular-section">
+      <h2>🔥 热门专题与推荐阅读</h2>
+      <div class="grid-2">
+        {topArticles.map(art => (
+          <ArticleCard article={art} />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding { padding-top: 3rem; padding-bottom: 4rem; }
+.error-card { text-align: center; max-width: 700px; margin: 0 auto 3rem auto; padding: 3rem 2rem; }
+.error-code { font-size: 4rem; font-weight: 900; color: var(--color-primary); display: block; line-height: 1; }
+.error-title { margin-top: 0.5rem; margin-bottom: 1rem; font-size: 1.8rem; border: none; }
+.error-desc { color: var(--color-text-muted); margin-bottom: 1.5rem; }
+.error-actions { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.error-search { display: flex; justify-content: center; }
+.popular-section h2 { margin-bottom: 1.5rem; }
+</style>

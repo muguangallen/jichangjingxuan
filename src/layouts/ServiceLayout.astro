@@ -1,0 +1,319 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs, { type Crumb } from '../components/Breadcrumbs.astro';
+import CompareTable from '../components/CompareTable.astro';
+import SpeedTestCard from '../components/SpeedTestCard.astro';
+import FAQ from '../components/FAQ.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import UpdateNotice from '../components/UpdateNotice.astro';
+import { generateServiceSchema, generateBreadcrumbSchema } from '../lib/schema';
+import type { ServiceEntity } from '../data/services';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  service: ServiceEntity;
+  relatedArticles?: CollectionEntry<'articles'>[];
+  relatedServices?: ServiceEntity[];
+}
+
+const { service, relatedArticles = [], relatedServices = [] } = Astro.props;
+
+const breadcrumbs: Crumb[] = [
+  { name: '服务实体档案', item: '/service/' },
+  { name: service.name, item: `/service/${service.slug}/` }
+];
+
+const serviceSchema = generateServiceSchema({
+  name: service.name,
+  description: service.description,
+  url: Astro.url.href,
+  updatedAt: service.updatedAt
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: '首页', item: '/' },
+  ...breadcrumbs
+]);
+
+const seoProps = {
+  title: `${service.name}公开资料：线路架构与套餐数据`,
+  description: service.description,
+  canonical: Astro.url.href
+};
+
+const planColumns = [
+  { key: 'name', label: '套餐名称' },
+  { key: 'price', label: '价格' },
+  { key: 'duration', label: '周期' },
+  { key: 'traffic', label: '包含流量' }
+];
+
+const defaultFaq = [
+  {
+    question: `${service.name}的主要线路架构是什么？`,
+    answer: service.routes.length > 0 ? `该服务主要采用 ${service.routes.join('与')} 架构。` : '暂无公开线路架构资料，以服务商页面实际信息为准。'
+  },
+  {
+    question: `${service.name}支持哪些设备的客户端？`,
+    answer: '支持标准的 Clash, Shadowrocket, Sing-box 等通用协议客户端订阅。'
+  }
+];
+---
+<BaseLayout seo={seoProps} schema={[serviceSchema, breadcrumbSchema]}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="service-header card">
+      <div class="service-top">
+        <h1 class="service-title">{service.name} 品牌资料页</h1>
+        <span class="status-tag">运营状态: {service.status === 'active' ? '正常运营' : '监控观察'}</span>
+      </div>
+      
+      <p class="service-lead">{service.description}</p>
+
+      <UpdateNotice 
+        publishedAt={service.updatedAt}
+        updatedAt={service.updatedAt}
+        dataPeriod="公开资料整理"
+        lastChecked={service.lastChecked}
+      />
+
+      {service.affiliateUrl && (
+        <div class="affiliate-box">
+          <a href={service.affiliateUrl} target="_blank" rel="sponsored nofollow noopener noreferrer" class="btn btn-primary">
+            直达 {service.name} 官方网站 →
+          </a>
+          <p class="disclosure-tip">商业透明声明：以上链接为服务商官方对外公开访问地址，包含第三方推广标签。</p>
+        </div>
+      )}
+    </header>
+
+    <div class="service-grid-body">
+      <main class="service-main-content">
+        <section class="section-card card">
+          <h2>📋 基础信息与线路架构</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-lbl">线路架构:</span>
+              <span class="info-val">{service.routes.length > 0 ? service.routes.join(' / ') : '暂无公开资料'}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-lbl">覆盖节点地区:</span>
+              <span class="info-val">{service.regions.length > 0 ? service.regions.join(', ') : '待补充测试数据'}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-lbl">特点能力:</span>
+              <span class="info-val">{service.features.length > 0 ? service.features.join(' | ') : '以服务商页面实际信息为准'}</span>
+            </div>
+          </div>
+        </section>
+
+        {service.plans && service.plans.length > 0 ? (
+          <section class="section-card card">
+            <h2>💰 套餐价格公开信息</h2>
+            <CompareTable columns={planColumns} data={service.plans} />
+          </section>
+        ) : (
+          <section class="section-card card">
+            <h2>💰 套餐价格公开信息</h2>
+            <p class="no-data-text">暂无公开套餐价格资料，请以服务商页面实际信息为准。</p>
+          </section>
+        )}
+
+        {service.performance && service.performance.length > 0 ? (
+          <section class="section-card card">
+            <h2>⚡ 实测性能记录</h2>
+            {service.performance.map(perf => (
+              <SpeedTestCard record={{
+                region: perf.region,
+                nodeName: `${service.name} - ${perf.region}`,
+                route: service.routes[0],
+                latency: perf.latency,
+                download: perf.download,
+                upload: perf.upload,
+                testedAt: perf.testedAt || service.updatedAt,
+                environment: '千兆宽带测试',
+                notes: '真实采样测试表现'
+              }} />
+            ))}
+          </section>
+        ) : (
+          <section class="section-card card">
+            <h2>⚡ 实测性能记录</h2>
+            <p class="no-data-text">暂无测试数据，待后续补充采样。</p>
+          </section>
+        )}
+
+        {service.suitableFor && service.suitableFor.length > 0 && (
+          <section class="section-card card">
+            <h2>🎯 适用场景与选型提示</h2>
+            <div class="two-col-box">
+              <div class="box-col">
+                <h3>适用场景：</h3>
+                <ul>
+                  {service.suitableFor.map(s => <li>{s}</li>)}
+                </ul>
+              </div>
+              <div class="box-col warning-col">
+                <h3>使用建议：</h3>
+                <ul>
+                  <li>建议新用户优先使用月付套餐验证体验。</li>
+                  <li>跨国网络连接效果受本地宽带运营商出口影响，请以实际体验为准。</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <FAQ items={defaultFaq} title={`${service.name} 常见问题解答`} />
+      </main>
+    </div>
+
+    {relatedArticles && relatedArticles.length > 0 && (
+      <section class="related-block">
+        <h2>📰 相关阅读文章</h2>
+        <div class="grid-2">
+          {relatedArticles.map(art => (
+            <ArticleCard article={art} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {relatedServices && relatedServices.length > 0 && (
+      <section class="related-block">
+        <h2>⚡ 类似线路服务对比</h2>
+        <div class="grid-3">
+          {relatedServices.map(srv => (
+            <ServiceCard service={srv} />
+          ))}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.service-header {
+  margin-bottom: 2rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.service-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.service-title {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #0f172a;
+}
+
+.status-tag {
+  font-size: 0.85rem;
+  background: #f1f5f9;
+  color: #334155;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  border: 1px solid #e2e8f0;
+}
+
+.service-lead {
+  font-size: 1.05rem;
+  color: #475569;
+  margin-bottom: 1.2rem;
+}
+
+.affiliate-box {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.disclosure-tip {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.section-card {
+  margin-bottom: 2rem;
+}
+
+.section-card h2 {
+  margin-top: 0;
+  margin-bottom: 1.2rem;
+  font-size: 1.3rem;
+  color: #0f172a;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.info-item {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.info-lbl {
+  color: #64748b;
+  font-weight: 600;
+  min-width: 110px;
+}
+
+.info-val {
+  color: #0f172a;
+}
+
+.no-data-text {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.two-col-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.box-col h3 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}
+
+.warning-col {
+  background: #fffbeb;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid #fde68a;
+}
+
+.related-block {
+  margin-top: 3rem;
+}
+
+.related-block h2 {
+  margin-bottom: 1.5rem;
+  color: #0f172a;
+}
+
+@media (max-width: 768px) {
+  .two-col-box {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

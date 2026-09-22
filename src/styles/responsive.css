@@ -1,0 +1,27 @@
+/* Responsive Design Breakpoints */
+
+@media (max-width: 1024px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  .grid-2 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 1rem; }
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.35rem; }
+  .grid-3 { grid-template-columns: 1fr; }
+  
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
+}
+
+@media (min-width: 769px) {
+  .mobile-only { display: none !important; }
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 1.5rem; }
+  p { font-size: 1rem; }
+  .card { padding: 1rem; }
+}

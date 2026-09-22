@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { siteConfig } from '../data/site';
+
+const breadcrumbs = [
+  { name: '隐私政策', item: '/privacy/' }
+];
+
+const seoProps = {
+  title: '隐私政策',
+  description: '说明本站的用户隐私保护政策与数据收集范围。',
+  canonical: `${siteConfig.url}/privacy/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <article class="content-container card">
+      <h1>隐私政策</h1>
+      <p>我们非常重视您的隐私。本静态资讯网站不主动要求用户注册个人账户，不收集敏感个人信息。</p>
+      <h2>一、匿名访问日志</h2>
+      <p>为保障服务器基础运行安全，服务器日志可能自动记录标准匿名访问数据（如 IP 地址、浏览器 Request Header、访问时间与页面路径）。</p>
+      <h2>二、Cookie 使用</h2>
+      <p>本站为全静态渲染，不依赖任何追踪性第三方 Cookie。</p>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding { padding-top: 2rem; padding-bottom: 4rem; }
+</style>

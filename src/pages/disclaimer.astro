@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { siteConfig } from '../data/site';
+
+const breadcrumbs = [
+  { name: '免责声明与商业披露', item: '/disclaimer/' }
+];
+
+const seoProps = {
+  title: '免责声明与商业披露',
+  description: '说明本站资讯内容的使用范围、公开数据整理标准与第三方商业链接披露。',
+  canonical: `${siteConfig.url}/disclaimer/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <article class="content-container card">
+      <h1>免责声明与商业披露</h1>
+      <p>在浏览与使用本站内容前，请仔细阅读以下条款：</p>
+      
+      <h2>1. 信息资讯性质</h2>
+      <p>本站呈现的关于网络连接服务、线路架构、价格套餐及节点地区分布的内容，均为基于服务商公开资料与核实数据的客观整理与科普分析，不构成任何商业承诺或服务保证。</p>
+
+      <h2>2. 商业链接披露 (Affiliate Disclosure)</h2>
+      <p>本站部分页面包含前往第三方服务商官方网站的商业推广链接。此类链接统一标记 <code>rel="sponsored nofollow noopener noreferrer"</code> 属性。当您通过此类链接产生订单时，本站可能会获得微小比例的推荐佣金，用以维持运维与数据搜集成本。但这绝不会影响本站对公开资料的客观展示。</p>
+
+      <h2>3. 资料时效性</h2>
+      <p>第三方网络服务提供商的节点列表、套餐价格及线路架构可能随时发生调整。用户在做出选型前应自行核实目标服务商官方页面的最新信息。</p>
+
+      <h2>4. 法律合规提示</h2>
+      <p>用户在使用任何跨国网络连接服务时，须遵守所在国家和地区的相关法律法规，不得利用网络连接从事任何违法违规行为。</p>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding { padding-top: 2rem; padding-bottom: 4rem; }
+</style>

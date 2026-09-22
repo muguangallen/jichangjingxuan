@@ -1,0 +1,109 @@
+---
+import { formatDate } from '../lib/utils';
+import { categories } from '../data/categories';
+
+export interface Props {
+  article: {
+    slug: string;
+    data: {
+      title: string;
+      description: string;
+      category: string;
+      updatedAt: string;
+      summary?: string;
+      tags?: string[];
+      featured?: boolean;
+    };
+  };
+}
+
+const { article } = Astro.props;
+const categoryObj = categories.find(c => c.slug === article.data.category);
+---
+<article class={`article-card card ${article.data.featured ? 'featured-card' : ''}`}>
+  <div class="card-meta">
+    <a href={`/category/${article.data.category}/`} class="badge">
+      {categoryObj ? categoryObj.name : article.data.category}
+    </a>
+    <time datetime={article.data.updatedAt} class="updated-time">
+      更新于 {formatDate(article.data.updatedAt)}
+    </time>
+  </div>
+
+  <h3 class="card-title">
+    <a href={`/article/${article.slug}/`}>{article.data.title}</a>
+  </h3>
+
+  <p class="card-desc">
+    {article.data.summary || article.data.description}
+  </p>
+
+  {article.data.tags && article.data.tags.length > 0 && (
+    <div class="card-tags">
+      {article.data.tags.slice(0, 3).map(tag => (
+        <a href={`/tag/${encodeURIComponent(tag)}/`} class="tag-link">#{tag}</a>
+      ))}
+    </div>
+  )}
+</article>
+
+<style>
+.article-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.featured-card {
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.updated-time {
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+}
+
+.card-title {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+.card-title a {
+  color: var(--color-text-main);
+  text-decoration: none;
+}
+
+.card-title a:hover {
+  color: var(--color-primary);
+}
+
+.card-desc {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+  flex: 1;
+}
+
+.card-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tag-link {
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+}
+
+.tag-link:hover {
+  color: var(--color-primary);
+}
+</style>

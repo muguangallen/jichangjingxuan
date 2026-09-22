@@ -1,0 +1,161 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs, { type Crumb } from '../components/Breadcrumbs.astro';
+import UpdateNotice from '../components/UpdateNotice.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import FAQ from '../components/FAQ.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import { generateArticleSchema, generateBreadcrumbSchema } from '../lib/schema';
+import { categories } from '../data/categories';
+import type { CollectionEntry } from 'astro:content';
+import type { ServiceEntity } from '../data/services';
+
+export interface Props {
+  article: CollectionEntry<'articles'> | CollectionEntry<'guides'>;
+  headings?: { depth: number; slug: string; text: string }[];
+  relatedArticles?: CollectionEntry<'articles'>[];
+  relatedServices?: ServiceEntity[];
+}
+
+const { article, headings = [], relatedArticles = [], relatedServices = [] } = Astro.props;
+const data = article.data;
+const categoryObj = categories.find(c => c.slug === data.category);
+
+const breadcrumbs: Crumb[] = [
+  { name: categoryObj ? categoryObj.name : data.category, item: `/category/${data.category}/` },
+  { name: data.title, item: Astro.url.pathname }
+];
+
+const articleSchema = generateArticleSchema({
+  title: data.title,
+  description: data.description,
+  url: Astro.url.href,
+  publishedAt: data.publishedAt || data.updatedAt,
+  updatedAt: data.updatedAt,
+  authorName: '网络性能评测实验室'
+});
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: '首页', item: '/' },
+  ...breadcrumbs
+]);
+
+const articleTags = 'tags' in data ? (data.tags as string[]) : [];
+
+const seoProps = {
+  title: data.title,
+  description: data.description,
+  canonical: Astro.url.href,
+  keywords: articleTags,
+  article: {
+    publishedTime: data.publishedAt || data.updatedAt,
+    modifiedTime: data.updatedAt
+  }
+};
+---
+<BaseLayout seo={seoProps} schema={[articleSchema, breadcrumbSchema]}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="article-header">
+      <div class="category-badge">
+        <a href={`/category/${data.category}/`} class="badge">{categoryObj ? categoryObj.name : data.category}</a>
+      </div>
+      <h1 class="article-h1">{data.title}</h1>
+      {data.summary && <p class="article-summary-lead">{data.summary}</p>}
+      
+      <UpdateNotice 
+        publishedAt={data.publishedAt || data.updatedAt} 
+        updatedAt={data.updatedAt} 
+        dataPeriod="2026年Q3周期监测数据" 
+        lastChecked="今日存活已核验" 
+      />
+    </div>
+
+    <div class="article-main-grid">
+      <article class="article-content-body">
+        {headings && headings.length > 0 && <TableOfContents headings={headings} />}
+
+        <slot />
+
+        {data.faq && data.faq.length > 0 && (
+          <FAQ items={data.faq} />
+        )}
+
+        {relatedServices && relatedServices.length > 0 && (
+          <section class="related-services-box">
+            <h3 class="section-subheading">⚡ 相关的网络服务评测实体</h3>
+            <div class="grid-2">
+              {relatedServices.map(srv => (
+                <ServiceCard service={srv} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <AuthorBox updatedAt={data.updatedAt} />
+      </article>
+    </div>
+
+    {relatedArticles && relatedArticles.length > 0 && (
+      <RelatedArticles articles={relatedArticles} />
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.article-header {
+  max-width: var(--content-max-width);
+  margin: 0 auto 2rem auto;
+}
+
+.article-h1 {
+  margin-top: 0.8rem;
+  margin-bottom: 1rem;
+  font-size: 2.2rem;
+  line-height: 1.3;
+}
+
+.article-summary-lead {
+  font-size: 1.1rem;
+  color: #334155;
+  background: #f8fafc;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #2563eb;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.article-main-grid {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.article-content-body {
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.related-services-box {
+  margin: 3rem 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.section-subheading {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+</style>

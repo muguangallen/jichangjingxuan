@@ -1,0 +1,244 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import ServiceTable from '../components/ServiceTable.astro';
+import SpeedtestRadar from '../components/SpeedtestRadar.astro';
+import FilterSelector from '../components/FilterSelector.astro';
+import PromoCodeWall from '../components/PromoCodeWall.astro';
+import BandwidthCalculator from '../components/BandwidthCalculator.astro';
+import UnlockMatrix from '../components/UnlockMatrix.astro';
+import ClientDownloadHub from '../components/ClientDownloadHub.astro';
+import QuickSetupAccordion from '../components/QuickSetupAccordion.astro';
+import CommunityWidget from '../components/CommunityWidget.astro';
+import TestingMethodology from '../components/TestingMethodology.astro';
+import FAQ from '../components/FAQ.astro';
+import SearchBox from '../components/SearchBox.astro';
+import { getSortedArticles } from '../lib/content';
+import { servicesData } from '../data/services';
+import { siteConfig } from '../data/site';
+
+const sortedArticles = await getSortedArticles();
+const latestArticles = sortedArticles.slice(0, 6);
+const activeServices = servicesData.filter(s => s.status === 'active' || s.status === 'updated').slice(0, 6);
+
+const homepageFaq = [
+  {
+    question: '2026 年晚高峰（20:00-23:00）千兆宽带实测最核心看什么指标？',
+    answer: '最核心看“TCP/ICMP 丢包率”与“单线程下行吞吐量”。绝大多数公网中转机场在平峰期跑满 1000M，但晚高峰遭遇 QOS 控管后丢包率飙升至 10% 以上，导致视频频繁卡顿；而物理 IPLC/IEPL 专线丢包率全天控制在 < 0.1%。'
+  },
+  {
+    question: '如何检测机场是否存在“虚标倍率”或偷跑流量陷阱？',
+    answer: '部分低价机场标注 1x 倍率，但后台实际按 2x-5x 扣费。建议在测试前记录订阅初始用量，拉取 1GB 测速文件后核对仪表盘流量扣除值。本站实测推荐的 15 家品牌均经过全 1x 倍率诚信验证。'
+  },
+  {
+    question: '访问 ChatGPT-4o 与 Claude 3.5 时，为什么纯净 IP 节点如此重要？',
+    answer: 'OpenAI 与 Anthropic 对数据中心（Data Center）广播 IP 建立了极严格的 ASN 屏蔽名单。广播 IP 会直接弹出 Access Denied 报错，而住宅原生/高纯净专线 IP 可以做到无感自动通过。'
+  }
+];
+
+const seoProps = {
+  title: siteConfig.title,
+  description: siteConfig.description,
+  canonical: `${siteConfig.url}/`,
+  keywords: [
+    "机场测速", "机场排行榜", "2026机场推荐", "稳定机场", "性价比机场", "专线机场推荐", "便宜机场", "梯子推荐", "科学上网",
+    "晚高峰不限速", "1000M测速跑满", "纯净ip机场推荐", "机场推荐 clash verge", "真实倍率不偷跑", "按量收费机场"
+  ]
+};
+---
+<BaseLayout seo={seoProps}>
+  <!-- Hero Section (Data-Driven Editorial) -->
+  <section class="hero-section">
+    <div class="container hero-content">
+      <div class="hero-badge">📊 晚高峰 1000M 宽带压测数据背书 · 真实倍率拒绝偷跑</div>
+      <h1 class="hero-title">10年机场主实测：2026 主流机场晚高峰 1000M 压测排行榜</h1>
+      <h2 class="hero-subtitle-h2">三网晚高峰（20:00-23:00）多地实测：真实延迟、丢包率与 AI/流媒体原生解锁全透明公开</h2>
+      <p class="hero-description">
+        杜绝营销号收钱虚假吹捧。基于电信/联通/移动三网千兆宽带真实晚高峰压测，揭秘 15 家主流机场物理线路、真实倍率诚信度与 SLA 稳定性，新手 1 分钟快速防坑选型。
+      </p>
+
+      <div class="hero-search">
+        <SearchBox placeholder="搜索浪网、暮光加速、飞猫云、微风网络、IPLC专线、1000M测速..." />
+      </div>
+
+      <div class="hero-tags">
+        <span class="tag-label">高频意图直达：</span>
+        <a href="/review/2026-airport-handbook/" class="badge">📘 2026 压测白皮书</a>
+        <a href="/guide/airport-recommendation/" class="badge">✈️ 15家排行榜</a>
+        <a href="/guide/stable-airport/" class="badge">🛡️ 0丢包专线</a>
+        <a href="/guide/value-airport/" class="badge">💰 平价月付选型</a>
+        <a href="/guide/iplc/" class="badge">⚡ IPLC专线实测</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container main-layout">
+    <!-- 1. Interactive Radar Component -->
+    <SpeedtestRadar />
+
+    <!-- 2. Interactive Filter Selector -->
+    <FilterSelector />
+
+    <!-- 3. Active Services Matrix -->
+    <section class="home-block">
+      <div class="block-header">
+        <h2 class="section-heading">⚡ 2026 评测矩阵 · 15 家主流服务商即时看板</h2>
+        <a href="/service/" class="view-more">查看 68 个服务实体列表 →</a>
+      </div>
+      <div class="grid-3">
+        {activeServices.map(srv => (
+          <ServiceCard service={srv} />
+        ))}
+      </div>
+    </section>
+
+    <!-- 4. Detailed Service Table Comparison -->
+    <section class="home-block">
+      <h2 class="section-heading">📈 15 家主流机场 1000M 晚高峰压测对照表</h2>
+      <ServiceTable services={activeServices} />
+    </section>
+
+    <!-- 5. Promo Code Wall -->
+    <PromoCodeWall />
+
+    <!-- 6. Unlock Matrix -->
+    <UnlockMatrix />
+
+    <!-- 7. Bandwidth & Cost Calculator -->
+    <BandwidthCalculator />
+
+    <!-- 8. Latest Articles -->
+    <section class="home-block">
+      <div class="block-header">
+        <h2 class="section-heading">📰 最新实测报告与选购避坑指南</h2>
+        <a href="/article/" class="view-more">浏览全部文章 →</a>
+      </div>
+      <div class="grid-3">
+        {latestArticles.map(art => (
+          <ArticleCard article={art} />
+        ))}
+      </div>
+    </section>
+
+    <!-- 9. Client Download Hub -->
+    <ClientDownloadHub />
+
+    <!-- 10. Quick Setup Guide -->
+    <QuickSetupAccordion />
+
+    <!-- 11. Testing Methodology -->
+    <TestingMethodology />
+
+    <!-- 12. FAQ Section -->
+    <FAQ items={homepageFaq} title="❓ 晚高峰压测与选型常见问题" />
+
+    <!-- 13. Community Widget -->
+    <CommunityWidget />
+  </div>
+</BaseLayout>
+
+<style>
+.hero-section {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 4.5rem 0 3.5rem 0;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 880px;
+}
+
+.hero-badge {
+  display: inline-block;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+.hero-title {
+  font-size: 2.3rem;
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  line-height: 1.25;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.hero-subtitle-h2 {
+  font-size: 1.2rem;
+  color: #2563eb;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.hero-description {
+  font-size: 1.05rem;
+  color: #475569;
+  margin-bottom: 2rem;
+  line-height: 1.75;
+}
+
+.hero-search {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.hero-tags {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+
+.tag-label {
+  color: #64748b;
+}
+
+.main-layout {
+  padding-top: 2.5rem;
+}
+
+.home-block {
+  margin-bottom: 3.5rem;
+}
+
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-heading {
+  margin: 0;
+  font-size: 1.5rem;
+  border: none;
+  color: #0f172a;
+}
+
+.view-more {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  .hero-subtitle-h2 {
+    font-size: 1rem;
+  }
+}
+</style>

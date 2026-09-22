@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getCollection } from 'astro:content';
+import { siteConfig } from '../../data/site';
+
+const reviews = await getCollection('reviews');
+
+const breadcrumbs = [
+  { name: '白皮书评测归档', item: '/review/' }
+];
+
+const seoProps = {
+  title: '2026 跨境网络选型白皮书与深度评测归档',
+  description: '资深网络运维实测。基于晚高峰千兆压测与 AI/流媒体原生 IP 检测，提供深度评测白皮书。',
+  canonical: `${siteConfig.url}/review/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-zinc-900 mb-2">📚 跨境网络选型白皮书 Hub</h1>
+      <p class="text-zinc-600">汇集长周期实测、链路抖动分析与计费模型深度测评报告。</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {reviews.map(rev => (
+        <div class="p-6 bg-white border border-zinc-200/80 rounded-2xl hover:border-zinc-300 transition shadow-sm">
+          <div class="text-xs text-zinc-400 mb-2">{rev.data.updatedAt}</div>
+          <h2 class="text-xl font-bold text-zinc-900 mb-3 hover:text-sky-600">
+            <a href={`/review/${rev.slug}/`}>{rev.data.title}</a>
+          </h2>
+          <p class="text-sm text-zinc-600 mb-4 line-clamp-3">{rev.data.description}</p>
+          <a href={`/review/${rev.slug}/`} class="inline-flex items-center text-xs font-bold text-zinc-900 hover:text-sky-600">
+            阅读白皮书全文 →
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,63 @@
+---
+// FilterSelector.astro - Client side interactive filter
+---
+<div class="my-6 p-4 bg-zinc-50/80 border border-zinc-200/80 rounded-xl">
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+    <h3 class="text-sm font-semibold text-zinc-900 flex items-center gap-1.5">
+      <span>🔍</span> 快速筛选模式
+    </h3>
+    <span class="text-xs text-zinc-400">过滤 15 家主流服务商</span>
+  </div>
+
+  <div class="flex flex-wrap gap-2" id="filter-buttons">
+    <button data-filter="all" class="filter-btn active bg-zinc-900 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition hover:bg-zinc-800">
+      全部服务 (15)
+    </button>
+    <button data-filter="under15" class="filter-btn bg-white border border-zinc-200 text-zinc-700 text-xs font-medium px-3 py-1.5 rounded-lg transition hover:bg-zinc-100">
+      ¥15 以内超值
+    </button>
+    <button data-filter="iplc" class="filter-btn bg-white border border-zinc-200 text-zinc-700 text-xs font-medium px-3 py-1.5 rounded-lg transition hover:bg-zinc-100">
+      ¥20-25 主力专线
+    </button>
+    <button data-filter="payg" class="filter-btn bg-white border border-zinc-200 text-zinc-700 text-xs font-medium px-3 py-1.5 rounded-lg transition hover:bg-zinc-100">
+      不限时按量流量包
+    </button>
+    <button data-filter="ai" class="filter-btn bg-white border border-zinc-200 text-zinc-700 text-xs font-medium px-3 py-1.5 rounded-lg transition hover:bg-zinc-100">
+      原生纯净 AI 支持
+    </button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('[data-brand-card]');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => {
+          b.classList.remove('bg-zinc-900', 'text-white');
+          b.classList.add('bg-white', 'text-zinc-700');
+        });
+        btn.classList.remove('bg-white', 'text-zinc-700');
+        btn.classList.add('bg-zinc-900', 'text-white');
+
+        const filter = btn.getAttribute('data-filter');
+
+        cards.forEach(card => {
+          const c = card as HTMLElement;
+          if (filter === 'all') {
+            c.style.display = 'block';
+          } else {
+            const tags = c.getAttribute('data-tags') || '';
+            if (tags.includes(filter || '')) {
+              c.style.display = 'block';
+            } else {
+              c.style.display = 'none';
+            }
+          }
+        });
+      });
+    });
+  });
+</script>

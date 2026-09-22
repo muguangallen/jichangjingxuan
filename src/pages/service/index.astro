@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import ServiceTable from '../../components/ServiceTable.astro';
+import { servicesData } from '../../data/services';
+import { siteConfig } from '../../data/site';
+
+const breadcrumbs = [
+  { name: '服务实体列表', item: '/service/' }
+];
+
+// Only display verified services with real data
+const verifiedServices = servicesData.filter(s => s.hasDetails === true);
+
+const seoProps = {
+  title: '网络连接服务品牌公开资料与选型数据库',
+  description: '整理汇集各大网络服务品牌公开资料、线路类型与套餐信息，提供客观对比参考。',
+  canonical: `${siteConfig.url}/service/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="archive-header card">
+      <h1>⚡ 网络连接服务品牌资料与选型数据库</h1>
+      <p>整理搜集已核实服务商的公开线路规格、节点地区分布与官方套餐说明。</p>
+    </header>
+
+    <section class="section-block">
+      <h2>📊 已核实品牌信息大表对比</h2>
+      <ServiceTable services={verifiedServices} />
+    </section>
+
+    <section class="section-block">
+      <h2>🔍 已核实品牌公开资料卡片</h2>
+      <div class="grid-3">
+        {verifiedServices.map(srv => (
+          <ServiceCard service={srv} />
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.archive-header {
+  margin-bottom: 2rem;
+}
+
+.archive-header h1 { margin-top: 0; }
+
+.section-block {
+  margin-bottom: 3rem;
+}
+
+.section-block h2 {
+  margin-bottom: 1.2rem;
+}
+</style>

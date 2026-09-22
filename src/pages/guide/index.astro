@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getCollection } from 'astro:content';
+import { siteConfig } from '../../data/site';
+
+const guides = await getCollection('guides');
+
+const breadcrumbs = [
+  { name: '专题 Hub', item: '/guide/' }
+];
+
+const seoProps = {
+  title: '2026 网络连接服务核心 Topic 专题集群',
+  description: '汇集机场推荐、稳定选型、性价比对比、IPLC专线及测速指标的核心知识 Hub 专题页。',
+  canonical: `${siteConfig.url}/guide/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="archive-header card">
+      <h1>📚 网络连接服务核心 Topic 专题 Hub</h1>
+      <p>每个专题聚集特定核心主题的最佳实践、对比框架与选型指南。</p>
+    </header>
+
+    <div class="grid-2">
+      {guides.map(guide => (
+        <div class="guide-card card">
+          <h2><a href={`/guide/${guide.slug}/`}>{guide.data.title}</a></h2>
+          <p>{guide.data.description}</p>
+          <a href={`/guide/${guide.slug}/`} class="btn btn-outline btn-sm">阅读完整专题 →</a>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.archive-header {
+  margin-bottom: 2rem;
+}
+
+.archive-header h1 { margin-top: 0; }
+
+.guide-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.35rem;
+}
+
+.guide-card h2 a { color: var(--color-text-main); }
+.guide-card h2 a:hover { color: var(--color-primary); }
+
+.guide-card p {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.2rem;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+</style>

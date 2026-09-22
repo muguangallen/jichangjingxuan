@@ -1,0 +1,87 @@
+---
+// UnlockMatrix.astro
+const brandsUnlock = [
+  { name: '浪网', chatgpt: '支持', claude: '纯净原生', netflix: '原生 4K', tiktok: '支持', type: 'IPLC 专线' },
+  { name: '暮光加速', chatgpt: '支持', claude: '纯净原生', netflix: '原生 4K', tiktok: '支持', type: 'IEPL 专线' },
+  { name: '飞猫云', chatgpt: '支持', claude: '需特定节点', netflix: '原生 4K', tiktok: '原生', type: 'BGP 中转' },
+  { name: '微风网络', chatgpt: '独立 IP', claude: '纯净原生', netflix: '原生 4K', tiktok: '支持', type: '独立 IP 节点' },
+  { name: '隐形人', chatgpt: '支持', claude: '住宅纯净', netflix: '原生 4K', tiktok: '支持', type: '双ISP 住宅' },
+  { name: 'FlyV', chatgpt: '支持', claude: '纯净原生', netflix: '原生 8K', tiktok: '支持 (含TVB)', type: '专线集群' },
+  { name: 'Sogo云', chatgpt: '支持', claude: '需特定节点', netflix: '原生 4K', tiktok: '支持', type: '隧道中转' },
+  { name: '二猫云', chatgpt: '支持', claude: '需特定节点', netflix: '原生 4K', tiktok: '支持', type: '公网中转' },
+  { name: '飞为', chatgpt: '支持', claude: '纯净原生', netflix: '原生 4K', tiktok: '支持', type: '深港专线' },
+];
+
+function getBadgeStyle(text: string) {
+  if (text.includes('需特定节点') || text.includes('待测试')) {
+    return {
+      bg: 'bg-amber-50 text-amber-700 border-amber-200/80',
+      dot: 'bg-amber-500'
+    };
+  }
+  if (text.includes('独立') || text.includes('住宅') || text.includes('8K')) {
+    return {
+      bg: 'bg-blue-50 text-blue-700 border-blue-200/80',
+      dot: 'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]'
+    };
+  }
+  return {
+    bg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
+    dot: 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]'
+  };
+}
+---
+
+<div class="my-8 bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
+  <div class="px-5 py-4 bg-gradient-to-r from-slate-50 via-white to-slate-50 border-b border-slate-200/80 flex flex-wrap justify-between items-center gap-2">
+    <div class="flex items-center gap-2">
+      <span class="flex h-2.5 w-2.5 relative">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+      </span>
+      <h3 class="text-base font-bold text-slate-900 tracking-tight">🌐 2026 主流服务商原生 IP 解锁测试矩阵</h3>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium border border-slate-200/60">真实轮询监测</span>
+      <span class="text-xs text-slate-400">更新时间: 2026年9月</span>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-left border-collapse">
+      <thead>
+        <tr class="bg-slate-50 text-slate-700 font-bold text-xs tracking-wider uppercase border-b border-slate-200">
+          <th class="py-3.5 px-5">品牌名称</th>
+          <th class="py-3.5 px-5">ChatGPT (OpenAI)</th>
+          <th class="py-3.5 px-5">Claude 3.5 / API</th>
+          <th class="py-3.5 px-5">Netflix / Disney+</th>
+          <th class="py-3.5 px-5">TikTok / TVB</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 bg-white">
+        {brandsUnlock.map(row => (
+          <tr class="hover:bg-slate-50/80 transition-colors duration-150">
+            <td class="py-3.5 px-5">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-900">{row.name}</span>
+                <span class="text-[11px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded border border-slate-200/60 font-normal">{row.type}</span>
+              </div>
+            </td>
+            {['chatgpt', 'claude', 'netflix', 'tiktok'].map(key => {
+              const val = row[key as keyof typeof row];
+              const style = getBadgeStyle(val);
+              return (
+                <td class="py-3.5 px-5">
+                  <span class={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${style.bg}`}>
+                    <span class={`w-1.5 h-1.5 rounded-full ${style.dot}`}></span>
+                    {val}
+                  </span>
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>

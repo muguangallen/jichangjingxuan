@@ -1,0 +1,56 @@
+---
+import { formatDate } from '../lib/utils';
+
+export interface Props {
+  publishedAt: string;
+  updatedAt: string;
+  dataPeriod?: string;
+  lastChecked?: string;
+}
+
+const { publishedAt, updatedAt, dataPeriod, lastChecked } = Astro.props;
+---
+<div class="update-notice">
+  <div class="notice-item">
+    📅 首次发布: <time datetime={publishedAt}>{formatDate(publishedAt)}</time>
+  </div>
+  <div class="notice-item highlight">
+    🔄 最近更新: <time datetime={updatedAt}>{formatDate(updatedAt)}</time>
+  </div>
+  {dataPeriod && (
+    <div class="notice-item">
+      📊 数据采样周期: <span>{dataPeriod}</span>
+    </div>
+  )}
+  {lastChecked && (
+    <div class="notice-item">
+      ✅ 链路存活复核: <span>{lastChecked}</span>
+    </div>
+  )}
+</div>
+
+<style>
+.update-notice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  background-color: rgba(56, 189, 248, 0.05);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.notice-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.notice-item.highlight {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+</style>

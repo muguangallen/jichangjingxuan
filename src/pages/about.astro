@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import AuthorBox from '../components/AuthorBox.astro';
+import { siteConfig } from '../data/site';
+
+const breadcrumbs = [
+  { name: '关于本站', item: '/about/' }
+];
+
+const seoProps = {
+  title: '关于本站 - 网络连接服务品牌官方资讯与服务中心',
+  description: '了解网络连接服务品牌官方资讯与服务中心的定位、资料搜集原则与数据披露说明。',
+  canonical: `${siteConfig.url}/about/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <article class="content-container card">
+      <h1>关于本站</h1>
+      <p class="lead">
+        欢迎来到 <strong>{siteConfig.name}</strong>。本站定位为面向中文用户的网络连接服务品牌官方资讯与服务中心。
+      </p>
+
+      <h2>🎯 网站定位</h2>
+      <p>
+        本站致力于搜集、整理与核实各大网络连接服务提供商的公开线路架构、节点地区分布、官方套餐资费与服务动态。我们力求以清晰、结构化的方式展示已核实的服务商公开信息，帮助用户获取真实参考。
+      </p>
+
+      <h2>📊 资料整理与数据来源原则</h2>
+      <ul>
+        <li><strong>公开资料核实</strong>：依据服务商官方公开页面与正式发布的信息进行整理。</li>
+        <li><strong>零数据虚构</strong>：未获公开核实的数据统一标注为“暂无公开资料”或“待补充测试数据”，绝不自动填充虚假性能数字。</li>
+        <li><strong>更新时间透明</strong>：各品牌资料页与资讯文章均明确标注整理与核实时间。</li>
+      </ul>
+
+      <h2>商业披露说明</h2>
+      <p>
+        本站部分页面包含前往服务商官方网站的跳转链接，此类商业链接统一带有 <code>rel="sponsored nofollow noopener noreferrer"</code> 属性，透明披露商业合作关系。
+      </p>
+
+      <h2>✍️ 官方编辑团队</h2>
+      <AuthorBox />
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding { padding-top: 2rem; padding-bottom: 4rem; }
+.lead { font-size: 1.05rem; color: #475569; }
+</style>

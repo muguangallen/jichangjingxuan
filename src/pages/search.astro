@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SearchBox from '../components/SearchBox.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import { getSortedArticles } from '../lib/content';
+import { servicesData } from '../data/services';
+import { siteConfig } from '../data/site';
+
+const query = Astro.url.searchParams.get('q') || '';
+const articles = await getSortedArticles();
+
+const matchedArticles = query 
+  ? articles.filter(a => 
+      a.data.title.toLowerCase().includes(query.toLowerCase()) || 
+      a.data.description.toLowerCase().includes(query.toLowerCase()) ||
+      (a.data.tags && a.data.tags.some(t => t.toLowerCase().includes(query.toLowerCase())))
+    )
+  : [];
+
+const matchedServices = query
+  ? servicesData.filter(s =>
+      s.name.toLowerCase().includes(query.toLowerCase()) ||
+      s.description.toLowerCase().includes(query.toLowerCase()) ||
+      s.routes.some(r => r.toLowerCase().includes(query.toLowerCase()))
+    )
+  : [];
+
+const breadcrumbs = [
+  { name: '站内搜索', item: '/search/' }
+];
+
+const seoProps = {
+  title: query ? `搜索结果: ${query}` : '站内搜索',
+  description: '搜索站内关于网络服务、节点性能、IPLC专线及避坑指南的相关文章与实体。',
+  canonical: `${siteConfig.url}/search/`,
+  noindex: true // Requirement 43: Search result page default noindex
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="search-page-header card">
+      <h1>🔍 站内搜索</h1>
+      <SearchBox placeholder="输入搜索关键词..." />
+    </header>
+
+    {query ? (
+      <div class="search-results">
+        <h2>包含 “{query}” 的搜索结果</h2>
+
+        {matchedServices.length > 0 && (
+          <section class="result-section">
+            <h3>⚡ 匹配的网络服务实体 ({matchedServices.length})</h3>
+            <div class="grid-3">
+              {matchedServices.map(srv => <ServiceCard service={srv} />)}
+            </div>
+          </section>
+        )}
+
+        {matchedArticles.length > 0 && (
+          <section class="result-section">
+            <h3>📰 匹配的评测文章 ({matchedArticles.length})</h3>
+            <div class="grid-2">
+              {matchedArticles.map(art => <ArticleCard article={art} />)}
+            </div>
+          </section>
+        )}
+
+        {matchedServices.length === 0 && matchedArticles.length === 0 && (
+          <p class="no-results">未找到与 “{query}” 相关的文章或服务实体，请尝试更换其他关键词。</p>
+        )}
+      </div>
+    ) : (
+      <p class="search-hint">请在上方搜索框中输入需要查询的关键词。</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding { padding-top: 2rem; padding-bottom: 4rem; }
+.search-page-header { margin-bottom: 2rem; }
+.search-page-header h1 { margin-top: 0; margin-bottom: 1rem; }
+.search-results { margin-top: 2rem; }
+.result-section { margin-bottom: 2.5rem; }
+.result-section h3 { margin-bottom: 1rem; }
+.no-results, .search-hint { color: var(--color-text-muted); font-size: 1.05rem; }
+</style>

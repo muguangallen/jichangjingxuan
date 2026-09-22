@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { siteConfig } from '../data/site';
+
+const breadcrumbs = [
+  { name: '资料整理规范', item: '/methodology/' }
+];
+
+const seoProps = {
+  title: '资料整理与数据规范 - 官方服务中心',
+  description: '详细说明网络连接服务品牌官方资讯与服务中心记录网络服务公开资料、线路类型与数据披露规范。',
+  canonical: `${siteConfig.url}/methodology/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <article class="content-container card">
+      <h1>网络连接服务资料整理与数据规范</h1>
+      <p class="lead">
+        为确保网站信息的准确性与参考价值，本中心恪守以下数据整理与数据披露规范。
+      </p>
+
+      <h2>一、真实性与零虚构原则</h2>
+      <p>
+        所有展示的服务商价格、线路类型与节点地区必须以服务商官方公开页面为准。未经公开确认或缺乏数据来源的字段，统一标注为“暂无公开资料”或“待补充测试数据”，绝不自动填充任何虚假的测速数值。
+      </p>
+
+      <h2>二、商业跳转链接规范</h2>
+      <p>
+        本站所有指向第三方服务商官方网站的商业推广链接，均统一标注 <code>rel="sponsored nofollow noopener noreferrer"</code> 属性，严格遵守搜索引擎对商业赞助链接的处理规范。
+      </p>
+
+      <h2>三、局限性与免责说明</h2>
+      <blockquote style="border-left: 4px solid #f59e0b; background: #fffbeb; padding: 1rem; color: #b45309; border-radius: 6px;">
+        跨国网络连接效果受本地运营商出口、线路维护及服务商政策变动等多重因素影响。本站展示的公开资料与选型指南仅供信息参考，具体服务参数请以服务商官方页面实时信息为准。
+      </blockquote>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding { padding-top: 2rem; padding-bottom: 4rem; }
+.lead { font-size: 1.05rem; color: #475569; }
+</style>

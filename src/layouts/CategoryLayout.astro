@@ -1,0 +1,109 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs, { type Crumb } from '../components/Breadcrumbs.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import FAQ from '../components/FAQ.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import { generateBreadcrumbSchema } from '../lib/schema';
+import type { CategoryMeta } from '../data/categories';
+import type { CollectionEntry } from 'astro:content';
+import type { ServiceEntity } from '../data/services';
+
+export interface Props {
+  category: CategoryMeta;
+  articles: CollectionEntry<'articles'>[];
+  featuredServices?: ServiceEntity[];
+}
+
+const { category, articles, featuredServices = [] } = Astro.props;
+
+const breadcrumbs: Crumb[] = [
+  { name: '分类', item: '/category/' },
+  { name: category.name, item: `/category/${category.slug}/` }
+];
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: '首页', item: '/' },
+  ...breadcrumbs
+]);
+
+const seoProps = {
+  title: category.title,
+  description: category.description,
+  canonical: Astro.url.href
+};
+---
+<BaseLayout seo={seoProps} schema={breadcrumbSchema}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="category-header card">
+      <h1 class="category-h1">{category.title}</h1>
+      <p class="category-summary">{category.summary}</p>
+    </header>
+
+    {featuredServices && featuredServices.length > 0 && (
+      <section class="section-block">
+        <h2 class="section-title">⚡ {category.name}精选服务实体</h2>
+        <div class="grid-3">
+          {featuredServices.map(srv => (
+            <ServiceCard service={srv} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="section-block">
+      <h2 class="section-title">📰 {category.name}相关文章</h2>
+      {articles.length > 0 ? (
+        <div class="grid-2">
+          {articles.map(art => (
+            <ArticleCard article={art} />
+          ))}
+        </div>
+      ) : (
+        <p class="empty-msg">该分类下暂无已发布文章。</p>
+      )}
+    </section>
+
+    {category.faq && category.faq.length > 0 && (
+      <FAQ items={category.faq} title={`${category.name}常见问题`} />
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.category-header {
+  margin-bottom: 2.5rem;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+.category-h1 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+}
+
+.category-summary {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.section-block {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  margin-bottom: 1.5rem;
+}
+
+.empty-msg {
+  color: var(--color-text-dim);
+  font-style: italic;
+}
+</style>

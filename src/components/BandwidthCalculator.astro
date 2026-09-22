@@ -1,0 +1,83 @@
+---
+// BandwidthCalculator.astro - Traffic & Budget Calculator Component
+---
+<div class="my-8 p-6 bg-white border border-zinc-200/80 rounded-2xl shadow-sm">
+  <div class="flex items-center gap-2 mb-4">
+    <span class="text-xl">🧮</span>
+    <h3 class="text-base font-bold text-zinc-900">月度流量需求与计费模式测算器</h3>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="space-y-4">
+      <div>
+        <div class="flex justify-between text-xs font-medium text-zinc-700 mb-1">
+          <span>🎬 每日 4K/1080P 视频播放：</span>
+          <span id="video-val" class="font-bold text-zinc-900">2 小时</span>
+        </div>
+        <input type="range" id="video-slider" min="0" max="8" step="0.5" value="2" class="w-full h-2 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-zinc-900" />
+      </div>
+
+      <div>
+        <div class="flex justify-between text-xs font-medium text-zinc-700 mb-1">
+          <span>🤖 每日 AI (ChatGPT/Claude)/网页使用：</span>
+          <span id="ai-val" class="font-bold text-zinc-900">1 小时</span>
+        </div>
+        <input type="range" id="ai-slider" min="0" max="6" step="0.5" value="1" class="w-full h-2 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-zinc-900" />
+      </div>
+    </div>
+
+    <div class="bg-zinc-50 border border-zinc-200/80 rounded-xl p-4 flex flex-col justify-between">
+      <div>
+        <div class="text-xs text-zinc-400 mb-1">预估月度总流量需求：</div>
+        <div class="text-3xl font-extrabold text-zinc-900" id="calc-total-traffic">180 GB <span class="text-xs font-normal text-zinc-500">/ 月</span></div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-zinc-200/80">
+        <div class="text-xs text-zinc-500 mb-1">💡 推荐计费选型：</div>
+        <div class="text-sm font-semibold text-zinc-900" id="calc-recommendation">平价月付订阅套餐 (月预算 ¥15-¥25)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const videoSlider = document.getElementById('video-slider') as HTMLInputElement;
+    const aiSlider = document.getElementById('ai-slider') as HTMLInputElement;
+    const videoVal = document.getElementById('video-val');
+    const aiVal = document.getElementById('ai-val');
+    const totalTraffic = document.getElementById('calc-total-traffic');
+    const recommendation = document.getElementById('calc-recommendation');
+
+    function updateCalculations() {
+      if (!videoSlider || !aiSlider) return;
+      const vHrs = parseFloat(videoSlider.value);
+      const aHrs = parseFloat(aiSlider.value);
+
+      if (videoVal) videoVal.innerText = `${vHrs} 小时`;
+      if (aiVal) aiVal.innerText = `${aHrs} 小时`;
+
+      // Approx calculations: 4K video ~ 2.5GB/hr, AI & Web ~ 0.2GB/hr
+      const monthlyVideo = vHrs * 2.5 * 30;
+      const monthlyAi = aHrs * 0.2 * 30;
+      const total = Math.round(monthlyVideo + monthlyAi);
+
+      if (totalTraffic) totalTraffic.innerHTML = `${total} GB <span class="text-xs font-normal text-zinc-500">/ 月</span>`;
+
+      if (recommendation) {
+        if (total < 40) {
+          recommendation.innerText = '⚡ 适合：永久不限时按量流量包 或 学生百元年付小包';
+        } else if (total <= 250) {
+          recommendation.innerText = '🚀 适合：平价月付专线套餐 (月预算 ¥15 - ¥25)';
+        } else {
+          recommendation.innerText = '🔥 适合：大流量旗舰专线包 (浪网 / Sogo云 / 二猫云)';
+        }
+      }
+    }
+
+    if (videoSlider && aiSlider) {
+      videoSlider.addEventListener('input', updateCalculations);
+      aiSlider.addEventListener('input', updateCalculations);
+    }
+  });
+</script>

@@ -1,0 +1,39 @@
+---
+// ClientDownloadHub.astro
+const clients = [
+  { name: 'Clash Verge Rev', platform: 'Windows / macOS / Linux', version: 'v1.7.7', tag: '推荐首选', url: 'https://github.com/clash-verge-rev/clash-verge-rev/releases' },
+  { name: 'Sing-box', platform: 'Windows / iOS / Android / macOS', version: 'v1.10.1', tag: '通用全能', url: 'https://github.com/SagerNet/sing-box/releases' },
+  { name: 'Shadowrocket (小火箭)', platform: 'iOS (美区 AppStore)', version: '最新版', tag: 'iOS 推荐', url: 'https://apps.apple.com/us/app/shadowrocket/id932747118' },
+  { name: 'Flclash', platform: 'Android / Windows / macOS', version: 'v0.8.6', tag: '跨平台美观', url: 'https://github.com/chen08209/FlClash/releases' },
+];
+---
+<div class="my-8 p-5 bg-zinc-50 border border-zinc-200/80 rounded-xl">
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="text-sm font-bold text-zinc-900 flex items-center gap-2">
+      <span>🚀</span> 主流客户端纯净官方直达下载 Hub
+    </h3>
+    <span class="text-xs text-zinc-400">拒绝捆绑软体</span>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    {clients.map(cli => (
+      <div class="p-3 bg-white border border-zinc-200/80 rounded-lg flex justify-between items-center hover:border-zinc-300 transition">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-xs text-zinc-900">{cli.name}</span>
+            <span class="text-[10px] bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded font-medium">{cli.tag}</span>
+          </div>
+          <div class="text-[11px] text-zinc-500 mt-1">{cli.platform} • {cli.version}</div>
+        </div>
+        <a 
+          href={cli.url} 
+          target="_blank" 
+          rel="nofollow noopener noreferrer"
+          class="text-xs font-semibold px-2.5 py-1 bg-zinc-900 text-white rounded hover:bg-zinc-800 transition"
+        >
+          GitHub 官方下载
+        </a>
+      </div>
+    ))}
+  </div>
+</div>

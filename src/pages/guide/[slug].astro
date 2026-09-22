@@ -1,0 +1,31 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { getRelatedArticles, getRelatedServices } from '../../lib/links';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map(g => ({
+    params: { slug: g.slug },
+    props: { guide: g }
+  }));
+}
+
+export interface Props {
+  guide: CollectionEntry<'guides'>;
+}
+
+const { guide } = Astro.props;
+const { Content, headings } = await guide.render();
+
+const relatedArticles = await getRelatedArticles(guide.slug, guide.data.category, [], 4);
+const relatedServices = getRelatedServices([], 3);
+---
+<ArticleLayout 
+  article={guide} 
+  headings={headings} 
+  relatedArticles={relatedArticles}
+  relatedServices={relatedServices}
+>
+  <Content />
+</ArticleLayout>

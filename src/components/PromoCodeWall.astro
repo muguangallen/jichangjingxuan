@@ -1,0 +1,67 @@
+---
+// PromoCodeWall.astro
+---
+<div class="my-8 p-5 bg-gradient-to-r from-blue-50/60 via-white to-slate-50 border border-slate-200/80 rounded-2xl shadow-sm text-slate-900">
+  <div class="flex items-center justify-between mb-4 border-b border-slate-200/80 pb-3">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">🎁</span>
+      <h3 class="text-base font-bold text-slate-900">独家折扣码 & 限时权益墙</h3>
+    </div>
+    <span class="text-xs text-slate-500 font-medium bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200/60">实时核验有效</span>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+    <div class="p-4 bg-white border border-slate-200/80 rounded-xl shadow-xs flex items-center justify-between gap-3">
+      <div>
+        <div class="font-bold text-sm text-slate-900">FlyV 专属 8 折优惠券</div>
+        <div class="text-xs text-slate-500 mt-0.5">全场通用，结账输入即享</div>
+      </div>
+      <button 
+        data-copy-code="fly20"
+        data-link="https://varnexa.flyvaff.com/#/?code=j5jD2aZH"
+        class="copy-promo-btn shrink-0 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors"
+      >
+        复制 fly20 并跳转
+      </button>
+    </div>
+
+    <div class="p-4 bg-white border border-slate-200/80 rounded-xl shadow-xs flex items-center justify-between gap-3">
+      <div>
+        <div class="font-bold text-sm text-slate-900">浪网 按量特惠</div>
+        <div class="text-xs text-slate-500 mt-0.5">不限时 ¥99/100GB 储备</div>
+      </div>
+      <a 
+        href="https://varnexa.wavenetaff.com/#/?code=B74yNBrX" 
+        target="_blank" 
+        rel="nofollow noopener noreferrer"
+        class="shrink-0 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-lg border border-slate-200 transition-colors"
+      >
+        直达领券
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const copyBtns = document.querySelectorAll('.copy-promo-btn');
+    copyBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const code = target.getAttribute('data-copy-code') || '';
+        const link = target.getAttribute('data-link') || '#';
+
+        navigator.clipboard.writeText(code).then(() => {
+          const originalText = target.innerText;
+          target.innerText = '已复制！跳转中...';
+          target.classList.replace('bg-blue-600', 'bg-emerald-600');
+          setTimeout(() => {
+            window.open(link, '_blank', 'noopener,noreferrer');
+            target.innerText = originalText;
+            target.classList.replace('bg-emerald-600', 'bg-blue-600');
+          }, 600);
+        });
+      });
+    });
+  });
+</script>

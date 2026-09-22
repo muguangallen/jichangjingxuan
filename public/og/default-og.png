@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <rect x="40" y="40" width="1120" height="550" rx="20" fill="#1e293b" stroke="#334155" stroke-width="4"/>
+  <text x="100" y="250" font-family="sans-serif" font-size="56" font-weight="bold" fill="#f8fafc">2026 网络连接服务与节点性能评测</text>
+  <text x="100" y="340" font-family="sans-serif" font-size="32" fill="#38bdf8">机场推荐 | 稳定机场 | IPLC专线 | 节点测速 | 选型指南</text>
+  <text x="100" y="480" font-family="sans-serif" font-size="24" fill="#94a3b8">面向中文用户的客观线路与性能评测媒体</text>
+</svg>

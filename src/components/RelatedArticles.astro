@@ -1,0 +1,33 @@
+---
+import ArticleCard from './ArticleCard.astro';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  articles: CollectionEntry<'articles'>[];
+  title?: string;
+}
+
+const { articles, title = "相关阅读推荐" } = Astro.props;
+---
+{articles && articles.length > 0 && (
+  <section class="related-section">
+    <h2 class="related-title">{title}</h2>
+    <div class="grid-2">
+      {articles.map(art => (
+        <ArticleCard article={art} />
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+.related-section {
+  margin: 3rem 0;
+  border-top: 1px solid var(--color-border);
+  padding-top: 2rem;
+}
+
+.related-title {
+  margin-bottom: 1.5rem;
+}
+</style>

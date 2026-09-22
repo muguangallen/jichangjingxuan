@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getArticlesByTag } from '../../lib/content';
+import { siteConfig } from '../../data/site';
+
+export const highValueTags = [
+  '机场推荐', '稳定机场', '性价比机场', '机场测速', '节点测速', 'IPLC', 'IEPL',
+  '机场套餐', '机场线路', '机场避坑', '流媒体', '游戏', 'AI', '香港节点', '日本节点', '新加坡节点', '美国节点'
+];
+
+export async function getStaticPaths() {
+  return highValueTags.map(tag => ({
+    params: { slug: tag },
+    props: { tag }
+  }));
+}
+
+export interface Props {
+  tag: string;
+}
+
+const { tag } = Astro.props;
+const articles = await getArticlesByTag(tag);
+
+const breadcrumbs = [
+  { name: '标签', item: '/tag/' },
+  { name: `#${tag}`, item: `/tag/${encodeURIComponent(tag)}/` }
+];
+
+const seoProps = {
+  title: `#${tag} - 网络服务公开资料与选型文章`,
+  description: `包含关键词 #${tag} 的最新网络连接服务、节点资讯与选择指南汇总。`,
+  canonical: `${siteConfig.url}/tag/${encodeURIComponent(tag)}/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="archive-header card">
+      <h1>🏷️ 标签: #{tag}</h1>
+      <p>共找到 {articles.length} 篇关联文章。</p>
+    </header>
+
+    <div class="grid-2">
+      {articles.map(art => (
+        <ArticleCard article={art} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.archive-header { margin-bottom: 2rem; }
+.archive-header h1 { margin-top: 0; color: #0f172a; }
+</style>

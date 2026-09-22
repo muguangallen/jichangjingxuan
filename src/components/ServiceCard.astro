@@ -1,0 +1,210 @@
+---
+import type { ServiceEntity } from '../data/services';
+import { formatDate } from '../lib/utils';
+
+export interface Props {
+  service: ServiceEntity;
+}
+
+const { service } = Astro.props;
+const lowestPlan = service.plans && service.plans.length > 0 ? service.plans[0] : null;
+const samplePerf = service.performance && service.performance.length > 0 ? service.performance[0] : null;
+---
+<div class="service-card card" data-brand-card data-tags={service.features.join(',')}>
+  <div class="service-header">
+    <h3 class="service-name">
+      {service.hasDetails ? (
+        <a href={`/service/${service.slug}/`}>{service.name}</a>
+      ) : (
+        <span>{service.name}</span>
+      )}
+    </h3>
+    <span class={`status-badge status-${service.status}`}>
+      {service.hasDetails ? '已核实公开资料' : '待补充资料'}
+    </span>
+  </div>
+
+  <p class="service-desc">{service.description}</p>
+
+  <div class="service-specs">
+    <div class="spec-item">
+      <span class="spec-label">线路类型：</span>
+      <span class="spec-value">{service.routes.length > 0 ? service.routes.join(' / ') : '暂无公开资料'}</span>
+    </div>
+
+    <div class="spec-item">
+      <span class="spec-label">节点地区：</span>
+      <span class="spec-value">{service.regions.length > 0 ? service.regions.join(', ') : '暂无公开资料'}</span>
+    </div>
+
+    <div class="spec-item">
+      <span class="spec-label">套餐门槛：</span>
+      <span class="spec-value highlight">
+        {lowestPlan ? `${lowestPlan.price} / ${lowestPlan.duration}` : '以服务商页面实际信息为准'}
+      </span>
+    </div>
+
+    <div class="spec-item">
+      <span class="spec-label">测试数据：</span>
+      <span class="spec-value">
+        {samplePerf ? (
+          `${samplePerf.region}${samplePerf.latency ? ` : ${samplePerf.latency}` : ''}${samplePerf.download ? ` (${samplePerf.download})` : ''}`
+        ) : '待补充测试数据'}
+      </span>
+    </div>
+  </div>
+
+  {service.suitableFor && service.suitableFor.length > 0 && (
+    <div class="service-suitable">
+      <span class="suitable-title">适用场景：</span>
+      <div class="suitable-tags">
+        {service.suitableFor.map(s => (
+          <span class="mini-tag">{s}</span>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <div class="service-footer">
+    <span class="updated-at">更新时间: {formatDate(service.updatedAt)}</span>
+    {service.affiliateUrl ? (
+      <a href={service.affiliateUrl} target="_blank" rel="sponsored nofollow noopener noreferrer" class="btn btn-outline btn-sm">
+        官方直达 →
+      </a>
+    ) : service.hasDetails ? (
+      <a href={`/service/${service.slug}/`} class="btn btn-outline btn-sm">
+        查看资料 →
+      </a>
+    ) : (
+      <span class="no-link-text">待补充资料</span>
+    )}
+  </div>
+</div>
+
+<style>
+.service-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+}
+
+.service-name {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.service-name a {
+  color: #0f172a;
+}
+
+.status-badge {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+.status-active {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.status-monitoring {
+  background: #f8fafc;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.service-desc {
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 1.2rem;
+}
+
+.service-specs {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 0.8rem;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.spec-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.spec-label {
+  color: #64748b;
+}
+
+.spec-value {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.spec-value.highlight {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.service-suitable {
+  margin-bottom: 1.2rem;
+  font-size: 0.8rem;
+}
+
+.suitable-title {
+  color: #64748b;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.suitable-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.mini-tag {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  color: #334155;
+}
+
+.service-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.8rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.updated-at {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.no-link-text {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.btn-sm {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+}
+</style>

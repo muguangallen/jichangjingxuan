@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import TagCloud from '../../components/TagCloud.astro';
+import { getSortedArticles } from '../../lib/content';
+import { siteConfig } from '../../data/site';
+
+const articles = await getSortedArticles();
+const allTags = Array.from(new Set(articles.flatMap(a => a.data.tags || [])));
+
+const breadcrumbs = [
+  { name: '文章归档', item: '/article/' }
+];
+
+const seoProps = {
+  title: '网络连接服务评测与选型指南文章列表',
+  description: '汇集所有关于2026机场推荐、稳定专线、节点测速、IPLC解析与避坑指南的客观评测文章。',
+  canonical: `${siteConfig.url}/article/`
+};
+---
+<BaseLayout seo={seoProps}>
+  <div class="container page-padding">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="archive-header card">
+      <h1>📰 所有评测与指南文章</h1>
+      <p>按更新时间排序，为你呈现客观、严谨的网络节点性能与线路分析。</p>
+    </header>
+
+    <section class="tag-section">
+      <h3>🏷️ 热门标签检索：</h3>
+      <TagCloud tags={allTags} />
+    </section>
+
+    <div class="grid-2">
+      {articles.map(art => (
+        <ArticleCard article={art} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.page-padding {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.archive-header {
+  margin-bottom: 2rem;
+}
+
+.archive-header h1 { margin-top: 0; }
+
+.tag-section {
+  margin-bottom: 2rem;
+  background: #1e293b;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+}
+
+.tag-section h3 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+</style>

@@ -1,0 +1,42 @@
+---
+// QuickSetupAccordion.astro
+---
+<div class="my-8 border border-zinc-200/80 rounded-xl overflow-hidden bg-white">
+  <div class="p-4 bg-zinc-50 border-b border-zinc-200/80">
+    <h3 class="text-sm font-bold text-zinc-900 flex items-center gap-2">
+      <span>⚙️</span> 1 分钟快速配置与防 DNS 污染/防误走代理指南
+    </h3>
+  </div>
+
+  <div class="divide-y divide-zinc-100 text-xs text-zinc-700">
+    <details class="group p-4" open>
+      <summary class="font-bold text-zinc-900 cursor-pointer flex justify-between items-center">
+        <span>1. 订阅链接一键导入与客户端启动</span>
+        <span class="text-zinc-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <p class="mt-2.5 text-zinc-600 leading-relaxed">
+        在已购买机场后台拷贝【Clash 订阅地址】。打开 Clash Verge Rev / Sing-box，进入 Profiles/订阅 页面粘贴导入。导入成功后刷新节点列表。
+      </p>
+    </details>
+
+    <details class="group p-4">
+      <summary class="font-bold text-zinc-900 cursor-pointer flex justify-between items-center">
+        <span>2. 防 DNS 污染与开启 TUN 接管模式</span>
+        <span class="text-zinc-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <p class="mt-2.5 text-zinc-600 leading-relaxed">
+        进入设置 (Settings)，开启 TUN Mode (虚拟网卡接管)。设置 DNS 解析模式为 `fake-ip` 或 `redir-host`，确保所有防污染 DNS 查询在代理服务器端完成，无视本地 ISP DNS 劫持。
+      </p>
+    </details>
+
+    <details class="group p-4">
+      <summary class="font-bold text-zinc-900 cursor-pointer flex justify-between items-center">
+        <span>3. 国内应用防误走代理与分流回国防护</span>
+        <span class="text-zinc-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <p class="mt-2.5 text-zinc-600 leading-relaxed">
+        请务必保持在 <strong>Rule (规则模式)</strong> 运行。客户端会自动调用内置的 GEOSITE (CN) 与 GEOIP (CN) 数据库，自动区分百度、微信、阿里、腾讯等国内流量直连，海外流量代理。
+      </p>
+    </details>
+  </div>
+</div>

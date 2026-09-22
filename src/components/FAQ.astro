@@ -1,0 +1,81 @@
+---
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export interface Props {
+  items: FAQItem[];
+  title?: string;
+}
+
+const { items, title = "常见问题 FAQ" } = Astro.props;
+---
+<section class="faq-section">
+  {title && <h2 class="faq-title">{title}</h2>}
+  <div class="faq-list">
+    {items.map((item, index) => (
+      <details class="faq-item" open={index === 0}>
+        <summary class="faq-question">
+          <span class="q-icon">Q:</span> {item.question}
+        </summary>
+        <div class="faq-answer">
+          <p>{item.answer}</p>
+        </div>
+      </details>
+    ))}
+  </div>
+</section>
+
+<style>
+.faq-section {
+  margin: 2.5rem 0;
+}
+
+.faq-title {
+  margin-bottom: 1.2rem;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.faq-item {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.faq-question {
+  padding: 1rem 1.2rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  color: var(--color-text-main);
+  user-select: none;
+}
+
+.faq-question:hover {
+  color: var(--color-primary);
+}
+
+.q-icon {
+  color: var(--color-primary);
+  margin-right: 0.4rem;
+  font-weight: 700;
+}
+
+.faq-answer {
+  padding: 0 1.2rem 1rem 1.2rem;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.faq-answer p {
+  margin: 0;
+}
+</style>

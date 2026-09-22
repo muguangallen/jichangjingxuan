@@ -1,0 +1,49 @@
+---
+import { headerNav } from '../data/navigation';
+const currentPath = Astro.url.pathname;
+---
+<nav class="nav-links">
+  {headerNav.map(item => {
+    const isActive = currentPath === item.path || (item.path !== '/' && currentPath.startsWith(item.path));
+    return (
+      <a href={item.path} class={isActive ? 'active' : ''}>
+        {item.title}
+        {item.badge && <span class="nav-badge">{item.badge}</span>}
+      </a>
+    );
+  })}
+</nav>
+
+<style>
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nav-links a {
+  color: #475569;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.4rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: #0f172a;
+  border-bottom-color: #0f172a;
+  text-decoration: none;
+}
+
+.nav-badge {
+  font-size: 0.7rem;
+  background: #2563eb;
+  color: #ffffff;
+  padding: 0.1rem 0.45rem;
+  border-radius: 99px;
+  margin-left: 0.3rem;
+  font-weight: 600;
+}
+</style>

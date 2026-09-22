@@ -1,0 +1,57 @@
+---
+export interface Crumb {
+  name: string;
+  item: string;
+}
+
+export interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+---
+<nav class="breadcrumbs" aria-label="面包屑导航">
+  <ol>
+    <li><a href="/">首页</a></li>
+    {items.map((crumb, idx) => (
+      <li>
+        <span class="separator">/</span>
+        {idx === items.length - 1 ? (
+          <span class="current" aria-current="page">{crumb.name}</span>
+        ) : (
+          <a href={crumb.item}>{crumb.name}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+.breadcrumbs {
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumbs li {
+  display: flex;
+  align-items: center;
+}
+
+.separator {
+  margin: 0 0.5rem;
+  color: var(--color-border-light);
+}
+
+.current {
+  color: var(--color-text-muted);
+}
+</style>
